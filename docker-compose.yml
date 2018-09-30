@@ -1,0 +1,23 @@
+version: '3'
+services:
+  server:
+    build: "."
+    ports:
+     - "4771:4771"
+     - "4770:4770"
+    volumes:
+     - /data/projects/go/src/github.com/jekiapp/gripmock/example/pb:/proto:ro
+     - /data/projects/go/src/github.com/jekiapp/gripmock/example/rules:/rules:ro
+
+    command: "gripmock -admin-listen 0.0.0.0 -grpc-listen 0.0.0.0 -stub /rules /proto/hello.proto"
+    # command: "tail -f /dev/null"
+
+  cli:
+    # image: "bvanvugt/grpc-cli"
+    build:
+        context: .
+        dockerfile: Dockerfile-cli
+    volumes:
+     - /data/projects/go/src/github.com/jekiapp/gripmock/example/pb:/proto:ro
+    working_dir: "/proto"
+    command: "tail -f /dev/null"
